@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard with Temperature, Humidity, and Light</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="history.html">History</a></li>
+        </ul>
+    </nav>
+
+    <div class="content-container">
+        <div class="dashboard-container">
+            <div class="info-box temp">
+                <h2>Nhiệt Độ</h2>
+                <p id="tempValue">--°C <i class="fas fa-thermometer-half"></i></p>
+            </div>
+            <div class="info-box humidity">
+                <h2>Độ Ẩm</h2>
+                <p id="humidityValue">--% <i class="fas fa-tint"></i></p>
+            </div>
+            <div class="info-box light">
+                <h2>Độ Sáng</h2>
+                <p id="lightValue">--lux <i class="fas fa-sun"></i></p>
+            </div>
+            <div class="info-box led-on" id="btnLedOn">
+                <h2>LED ON</h2>
+                <p>✓</p>
+            </div>
+            <div class="info-box led-off" id="btnLedOff">
+                <h2>LED OFF</h2>
+                <p>✗</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="sensorChart"></canvas>
+        </div>
+        <div id="notification" style="display:none; margin-top: 10px;"></div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

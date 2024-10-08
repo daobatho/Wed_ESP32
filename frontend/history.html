@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%);
+            font-family: 'Open Sans', sans-serif;
+            display: flex;
+            flex-direction: row;
+        }
+
+        nav {
+            width: 70px;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        nav ul li {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .content-container {
+            margin-left: 70px;
+            width: calc(100% - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .content-container h1 {
+            color: white;
+            font-size: 48px;
+        }
+
+        .content-container p {
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="history.html">History</a></li> <!-- Liên kết tới trang History -->
+        </ul>
+    </nav>
+
+    <div class="content-container">
+        <h1>Lịch sử cập nhật dữ liệu</h1>
+        <p>Trang này sẽ hiển thị lịch sử cập nhật dữ liệu.</p>
+    </div>
+</body>
+</html>
