@@ -56,20 +56,43 @@
             margin-left: 70px;
             width: calc(100% - 70px);
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-between;
             padding: 20px;
         }
 
-        .content-container h1 {
-            color: white;
-            font-size: 48px;
+        .table-container {
+            width: 48%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
         }
 
-        .content-container p {
+        h1 {
             color: white;
-            font-size: 18px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -77,13 +100,121 @@
     <nav>
         <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="history.html">History</a></li> <!-- Liên kết tới trang History -->
+            <li><a href="history.html">History</a></li>
         </ul>
     </nav>
 
     <div class="content-container">
-        <h1>Lịch sử cập nhật dữ liệu</h1>
-        <p>Trang này sẽ hiển thị lịch sử cập nhật dữ liệu.</p>
+        <div class="table-container">
+            <h1>Lịch sử cảm biến</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Temp</th>
+                        <th>Humid</th>
+                        <th>Light</th>
+                        <th>Time (mm/dd/yy, hh:mm:ss)</th>
+                    </tr>
+                </thead>
+                <tbody id="sensorHistoryTableBody">
+                    <!-- Dữ liệu cảm biến sẽ được thêm vào đây -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h1>Lịch sử thiết bị</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Device</th>
+                        <th>Action</th>
+                        <th>Time (mm/dd/yy, hh:mm:ss)</th>
+                    </tr>
+                </thead>
+                <tbody id="deviceHistoryTableBody">
+                    <!-- Dữ liệu thiết bị sẽ được thêm vào đây -->
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script>
+        // Hàm để lấy dữ liệu lịch sử cảm biến từ backend
+        async function fetchSensorHistory() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/sensor_history');
+                if (!response.ok) {
+                    throw new Error('Mất kết nối với server');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Lỗi:', error);
+                return [];
+            }
+        }
+
+        // Hàm để lấy dữ liệu lịch sử thiết bị từ backend
+        async function fetchDeviceHistory() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/device_history');
+                if (!response.ok) {
+                    throw new Error('Mất kết nối với server');
+                }
+                const data = await response.json();
+                return data;
+            } catch (error) {   
+                console.error('Lỗi:', error);
+                return [];
+            }
+        }
+
+        // Hàm để hiển thị lịch sử cảm biến
+        function loadSensorHistory(sensorHistory) {
+            const tableBody = document.getElementById('sensorHistoryTableBody');
+            tableBody.innerHTML = ''; // Xóa nội dung hiện tại
+
+            sensorHistory.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.id}</td>
+                    <td>${entry.Temp}</td>
+                    <td>${entry.Humid}</td>
+                    <td>${entry.Light}</td>
+                    <td>${new Date(entry.Time).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Hàm để hiển thị lịch sử thiết bị
+        function loadDeviceHistory(deviceHistory) {
+            const tableBody = document.getElementById('deviceHistoryTableBody');
+            tableBody.innerHTML = ''; // Xóa nội dung hiện tại
+
+            deviceHistory.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.ID}</td>
+                    <td>${entry.Device}</td>
+                    <td>${entry.Action}</td>
+                    <td>${new Date(entry.Time).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tải lịch sử khi trang được tải
+        window.onload = async function() {
+            const sensorHistory = await fetchSensorHistory();
+            loadSensorHistory(sensorHistory);
+
+            const deviceHistory = await fetchDeviceHistory();
+            loadDeviceHistory(deviceHistory);
+        };
+    </script>
 </body>
 </html>

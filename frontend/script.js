@@ -1,8 +1,20 @@
-const apiUrl = 'http://192.168.135.86:5000/api/latest_sensor_data'; // Đường dẫn đến API
-const ledUrl = 'http://192.168.135.86:5000/api/control_led';  // Đường dẫn đúng đến API điều khiển LED
+const apiUrl = 'http://192.168.0.10:5000/api/latest_sensor_data'; // Đường dẫn đến API
+const ledUrl = 'http://192.168.0.10:5000/api/control_led'; // Đường dẫn đến API điều khiển LED
+const fanUrl = 'http://192.168.0.10:5000/api/control_fan'; // API điều khiển FAN
 
-// Định nghĩa nhãn cho trục x của biểu đồ
-const labels = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00'];
+let ledState = 'off'; // Trạng thái ban đầu của LED
+let fanState = 'off'; // Trạng thái ban đầu của FAN
+
+// Khởi tạo nhãn cho trục x, bắt đầu từ thời gian hiện tại
+let labels = [];
+const now = new Date();
+const startTime = now; // Thời gian bắt đầu là hiện tại
+
+// Tạo nhãn thời gian cho 30 phút (180 lần 10 giây)
+for (let i = 0; i <= 180; i++) {
+    const time = new Date(startTime.getTime() + (i * 10000)); // Mỗi nhãn cách nhau 10 giây
+    labels.push(`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`);
+}
 
 // Định nghĩa cấu trúc dữ liệu cho biểu đồ
 const data = {
@@ -12,21 +24,21 @@ const data = {
             label: 'Nhiệt độ (°C)',
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            data: [],
+            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
             fill: true
         },
         {
             label: 'Độ ẩm (%)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            data: [],
+            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
             fill: true
         },
         {
             label: 'Độ sáng (%)',
             backgroundColor: 'rgba(255, 206, 86, 0.2)',
             borderColor: 'rgba(255, 206, 86, 1)',
-            data: [],
+            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
             fill: true
         }
     ]
@@ -90,9 +102,11 @@ const sensorChart = new Chart(
     document.getElementById('sensorChart'),
     config
 );
-let state = {}; // Định nghĩa biến state
+
+let currentIndex = 0; // Đánh dấu vị trí hiện tại trong mảng dữ liệu
+
 // Cập nhật dữ liệu từ API
-function updateData(data) {
+function updateData() {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -104,13 +118,16 @@ function updateData(data) {
                 document.getElementById('lightValue').textContent = `${data.light}%`;
 
                 // Cập nhật dữ liệu vào biểu đồ
-                sensorChart.data.datasets[0].data.push(data.temperature);
-                sensorChart.data.datasets[1].data.push(data.humidity);
-                sensorChart.data.datasets[2].data.push(data.light);
+                sensorChart.data.datasets[0].data[currentIndex] = data.temperature;
+                sensorChart.data.datasets[1].data[currentIndex] = data.humidity;
+                sensorChart.data.datasets[2].data[currentIndex] = data.light;
 
-                // Nếu vượt quá số nhãn, xóa dữ liệu cũ nhất
-                if (sensorChart.data.datasets[0].data.length > labels.length) {
-                    sensorChart.data.datasets.forEach(dataset => dataset.data.shift());
+                // Tăng chỉ số vị trí hiện tại
+                currentIndex++;
+
+                // Nếu vượt quá số nhãn, đặt lại chỉ số về 0
+                if (currentIndex >= labels.length) {
+                    currentIndex = 0; // Đặt lại chỉ số về 0 để bắt đầu từ đầu
                 }
 
                 sensorChart.update();
@@ -122,29 +139,40 @@ function updateData(data) {
 }
 
 // Gửi yêu cầu điều khiển LED
-function toggleLed(state) {
-
+function toggleLed() {
+    ledState = ledState === 'on' ? 'off' : 'on';
     fetch(ledUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status: state })
+        body: JSON.stringify({ status: ledState })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('HTTP error! status: ${response.status}');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        const message = `LED đã ${state === 'on' ? 'bật' : 'tắt'}`;
-        console.log(message);
-        showNotification(message); // Hiển thị thông báo với thông báo tương ứng
+        console.log(`LED turned ${ledState}`);
+        document.getElementById('ledStatus').textContent = ledState === 'on' ? '✓' : '✗';
     })
     .catch(error => console.error('Lỗi:', error));
 }
 
+// Gửi yêu cầu điều khiển FAN
+function toggleFan() {
+    fanState = fanState === 'on' ? 'off' : 'on';
+    fetch(fanUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: fanState })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(`FAN turned ${fanState}`);
+        document.getElementById('fanStatus').textContent = fanState === 'on' ? '✓' : '✗';
+    })
+    .catch(error => console.error('Lỗi:', error));
+}
 
 function showNotification(message) {
     const notificationDiv = document.getElementById('notification');
@@ -155,22 +183,14 @@ function showNotification(message) {
     }, 3000);
 }
 
-
-// Lắng nghe sự kiện click vào nút bật/tắt LED
-document.getElementById('btnLedOn').addEventListener('click', function () {
-    toggleLed('on'); // Gửi yêu cầu bật LED
-    showNotification("LED is turned ON"); // Hiển thị thông báo
-});
-
-document.getElementById('btnLedOff').addEventListener('click', function () {
-    toggleLed('off'); // Gửi yêu cầu tắt LED
-    showNotification("LED is turned OFF"); // Hiển thị thông báo
-});
+// Lắng nghe sự kiện click vào nút điều khiển LED và FAN
+document.getElementById('btnLedControl').addEventListener('click', toggleLed);
+document.getElementById('btnFanControl').addEventListener('click', toggleFan);
 
 // Bắt đầu lấy dữ liệu khi trang được tải
 function startDataFetching() {
     updateData(); // Gọi hàm lấy dữ liệu một lần đầu tiên
-    setInterval(updateData, 5000); // Gọi lại sau mỗi 5 giây
+    setInterval(updateData, 10000); // Gọi lại sau mỗi 10 giây
 }
 
 // Khởi động lấy dữ liệu khi trang tải

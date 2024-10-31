@@ -125,13 +125,16 @@ nav ul li a:hover {
     background-color: #ff851b;
 }
 
-.info-box.led-on {
-    background-color: #ffc107;
+.info-box h2 i {
+    color: #ffd700; /* Màu vàng cho biểu tượng LED */
+    font-size: 40px; /* Kích thước biểu tượng */
+    margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
 }
 
-.info-box.led-off {
-    background-color: #6c757d;
+.fan-control h2 i {
+    color: #00bfff; /* Màu xanh cho biểu tượng FAN */
 }
+
 
 /* Đặt các thuộc tính cho khối chứa biểu đồ */
 .chart-container {
