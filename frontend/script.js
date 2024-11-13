@@ -10,10 +10,14 @@ let labels = [];
 const now = new Date();
 const startTime = now; // Thời gian bắt đầu là hiện tại
 
-// Tạo nhãn thời gian cho 30 phút (180 lần 10 giây)
-for (let i = 0; i <= 180; i++) {
+// Tạo nhãn thời gian cho 5 phút (30 lần 10 giây)
+for (let i = 0; i <= 30; i++) {
     const time = new Date(startTime.getTime() + (i * 10000)); // Mỗi nhãn cách nhau 10 giây
-    labels.push(`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`);
+    if (i % 6 === 0) { // Chỉ thêm nhãn mỗi phút (mỗi 6 lần 10 giây)
+        labels.push(`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`);
+    } else {
+        labels.push(''); // Các nhãn khác để trống để tạo khoảng chia nhỏ hơn
+    }
 }
 
 // Định nghĩa cấu trúc dữ liệu cho biểu đồ
