@@ -5,19 +5,15 @@ const fanUrl = 'http://192.168.0.10:5000/api/control_fan'; // API điều khiể
 let ledState = 'off'; // Trạng thái ban đầu của LED
 let fanState = 'off'; // Trạng thái ban đầu của FAN
 
-// Khởi tạo nhãn cho trục x, bắt đầu từ thời gian hiện tại
+// Khởi tạo nhãn cho trục x (thời gian)
 let labels = [];
-const now = new Date();
-const startTime = now; // Thời gian bắt đầu là hiện tại
+let currentIndex = 0; // Đánh dấu vị trí hiện tại trong mảng dữ liệu
 
-// Tạo nhãn thời gian cho 5 phút (30 lần 10 giây)
-for (let i = 0; i <= 30; i++) {
-    const time = new Date(startTime.getTime() + (i * 10000)); // Mỗi nhãn cách nhau 10 giây
-    if (i % 6 === 0) { // Chỉ thêm nhãn mỗi phút (mỗi 6 lần 10 giây)
-        labels.push(`${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`);
-    } else {
-        labels.push(''); // Các nhãn khác để trống để tạo khoảng chia nhỏ hơn
-    }
+// Tạo nhãn thời gian cho mỗi lần cập nhật
+function addTimeLabel() {
+    const now = new Date();
+    const timeLabel = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    labels.push(timeLabel); // Thêm nhãn thời gian vào mảng nhãn
 }
 
 // Định nghĩa cấu trúc dữ liệu cho biểu đồ
@@ -28,21 +24,21 @@ const data = {
             label: 'Nhiệt độ (°C)',
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
+            data: [], // Mảng dữ liệu nhiệt độ
             fill: true
         },
         {
             label: 'Độ ẩm (%)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
+            data: [], // Mảng dữ liệu độ ẩm
             fill: true
         },
         {
             label: 'Độ sáng (%)',
             backgroundColor: 'rgba(255, 206, 86, 0.2)',
             borderColor: 'rgba(255, 206, 86, 1)',
-            data: Array(labels.length).fill(null), // Khởi tạo mảng dữ liệu với độ dài tương ứng
+            data: [], // Mảng dữ liệu độ sáng
             fill: true
         }
     ]
@@ -107,8 +103,6 @@ const sensorChart = new Chart(
     config
 );
 
-let currentIndex = 0; // Đánh dấu vị trí hiện tại trong mảng dữ liệu
-
 // Cập nhật dữ liệu từ API
 function updateData() {
     fetch(apiUrl)
@@ -121,19 +115,15 @@ function updateData() {
                 document.getElementById('humidityValue').textContent = `${data.humidity}%`;
                 document.getElementById('lightValue').textContent = `${data.light}%`;
 
+                // Thêm nhãn thời gian cho mỗi lần cập nhật
+                addTimeLabel();
+
                 // Cập nhật dữ liệu vào biểu đồ
-                sensorChart.data.datasets[0].data[currentIndex] = data.temperature;
-                sensorChart.data.datasets[1].data[currentIndex] = data.humidity;
-                sensorChart.data.datasets[2].data[currentIndex] = data.light;
+                sensorChart.data.datasets[0].data.push(data.temperature);
+                sensorChart.data.datasets[1].data.push(data.humidity);
+                sensorChart.data.datasets[2].data.push(data.light);
 
-                // Tăng chỉ số vị trí hiện tại
-                currentIndex++;
-
-                // Nếu vượt quá số nhãn, đặt lại chỉ số về 0
-                if (currentIndex >= labels.length) {
-                    currentIndex = 0; // Đặt lại chỉ số về 0 để bắt đầu từ đầu
-                }
-
+                // Cập nhật biểu đồ
                 sensorChart.update();
             } else {
                 console.error('Dữ liệu không hợp lệ:', data);

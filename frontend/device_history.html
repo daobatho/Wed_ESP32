@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch sử Dữ liệu Cảm biến</title>
+    <title>Lịch sử Thiết bị</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -74,8 +74,8 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 10px;
-            max-height: 500px; /* Giới hạn chiều cao của bảng */
-            overflow: hidden; /* Loại bỏ thanh cuộn ngang */
+            max-height: 500px;
+            overflow: hidden;
         }
         h1 {
             color: white;
@@ -84,9 +84,9 @@
         }
         table {
             border-collapse: collapse;
-            width: 100%; /* Đặt bảng chiếm toàn bộ chiều rộng */
-            max-width: 1200px; /* Đặt chiều rộng tối đa cho bảng */
-            margin: auto; /* Canh giữa bảng */
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
             table-layout: fixed;
         }
         th, td {
@@ -94,8 +94,8 @@
             padding: 10px;
             text-align: center;
             color: white;
-            word-wrap: break-word; /* Cho phép nội dung dài ngắt dòng */
-            white-space: nowrap; /* Tránh xuống dòng không cần thiết */
+            word-wrap: break-word;
+            white-space: nowrap;
         }
         th {
             background-color: rgba(255, 255, 255, 0.2);
@@ -108,19 +108,19 @@
         }
         tbody {
             display: block;
-            max-height: 420px; /* Giới hạn chiều cao tối đa của tbody */
-            overflow-y: auto; /* Thanh cuộn dọc khi cần thiết */
+            max-height: 420px;
+            overflow-y: auto;
         }
         thead th, tbody td {
-            min-width: 250px; /* Tăng chiều rộng tối thiểu cho các cột */
+            min-width: 390px;
         }
         tbody td:nth-child(1),
         thead th:nth-child(1) {
-            min-width: 80px; /* Cột ID */
+            min-width: 80px;
         }
-        tbody td:nth-child(5),
-        thead th:nth-child(5) {
-            min-width: 250px; /* Cột Time */
+        tbody td:nth-child(4),
+        thead th:nth-child(4) {
+            min-width: 250px;
         }
     </style>
 </head>
@@ -128,7 +128,6 @@
     <!-- Thanh danh mục -->
     <nav>
         <ul>
-            
             <li><a href="index.html" target="_self">HOME</a></li>
             <li><a href="history.html" target="data_tab">DATA</a></li>
             <li><a href="device_history.html" target="device_tab">DEVICE</a></li>
@@ -138,40 +137,42 @@
     <div class="content-container">
         <!-- Thanh truy vấn -->
         <div class="query-container">
-            <button onclick="findMaxMin('Temp', 'tempResult')">Tìm Max/Min Nhiệt độ</button>
-            <span id="tempResult" class="result-display">Kết quả sẽ hiển thị ở đây</span>
+            <button onclick="countDeviceAction('LED', 'Bật', 'ledOnCount')">Đếm LED Bật</button>
+            <span id="ledOnCount" class="result-display">0</span>
 
-            <button onclick="findMaxMin('Humid', 'humidResult')">Tìm Max/Min Độ ẩm</button>
-            <span id="humidResult" class="result-display">Kết quả sẽ hiển thị ở đây</span>
+            <button onclick="countDeviceAction('LED', 'Tắt', 'ledOffCount')">Đếm LED Tắt</button>
+            <span id="ledOffCount" class="result-display">0</span>
 
-            <button onclick="findMaxMin('Light', 'lightResult')">Tìm Max/Min Ánh sáng</button>
-            <span id="lightResult" class="result-display">Kết quả sẽ hiển thị ở đây</span>
+            <button onclick="countDeviceAction('FAN', 'Bật', 'fanOnCount')">Đếm FAN Bật</button>
+            <span id="fanOnCount" class="result-display">0</span>
+
+            <button onclick="countDeviceAction('FAN', 'Tắt', 'fanOffCount')">Đếm FAN Tắt</button>
+            <span id="fanOffCount" class="result-display">0</span>
         </div>
 
-        <!-- Bảng lịch sử -->
         <div class="table-container">
-            <h1>Lịch sử Cảm biến</h1>
+            <h1>Lịch sử Thiết bị</h1>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Temp</th>
-                        <th>Humid</th>
-                        <th>Light</th>
+                        <th>Device</th>
+                        <th>Action</th>
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody id="sensorHistoryTableBody">
-                    <!-- Dữ liệu cảm biến sẽ được thêm vào đây -->
+                <tbody id="deviceHistoryTableBody">
+                    <!-- Dữ liệu thiết bị sẽ được thêm vào đây -->
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        async function fetchSensorHistory() {
+        // Fetch device history from API
+        async function fetchDeviceHistory() {
             try {
-                const response = await fetch('http://127.0.0.1:5000/api/sensor_history');
+                const response = await fetch('http://127.0.0.1:5000/api/device_history');
                 if (!response.ok) throw new Error('Mất kết nối với server');
                 const data = await response.json();
                 return data;
@@ -181,49 +182,47 @@
             }
         }
 
-        function loadSensorHistory(sensorHistory) {
-            const tableBody = document.getElementById('sensorHistoryTableBody');
-            tableBody.innerHTML = '';
-            sensorHistory.forEach(entry => {
+        // Load device history into the table
+        function loadDeviceHistory(deviceHistory) {
+            const tableBody = document.getElementById('deviceHistoryTableBody');
+            tableBody.innerHTML = ''; // Clear previous data
+
+            if (deviceHistory.length === 0) {
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.id}</td>
-                    <td>${entry.Temp}</td>
-                    <td>${entry.Humid}</td>
-                    <td>${entry.Light}</td>
-                    <td>${new Date(entry.Time).toLocaleString()}</td>
-                `;
+                row.innerHTML = `<td colspan="4" style="text-align: center;">Không có dữ liệu</td>`;
                 tableBody.appendChild(row);
-            });
-        }
-
-        async function findMaxMin(parameter, resultElementId) {
-            try {
-                const response = await fetch('http://127.0.0.1:5000/api/sensor_history');
-                if (!response.ok) throw new Error('Mất kết nối với server');
-                const data = await response.json();
-
-                if (data.length === 0) {
-                    document.getElementById(resultElementId).innerText = 'Không có dữ liệu để truy vấn';
-                    return;
-                }
-
-                // Tìm giá trị max và min
-                const values = data.map(entry => entry[parameter]);
-                const maxVal = Math.max(...values);
-                const minVal = Math.min(...values);
-
-                // Hiển thị kết quả
-                document.getElementById(resultElementId).innerText = `Max: ${maxVal}, Min: ${minVal}`;
-            } catch (error) {
-                console.error('Lỗi:', error);
-                document.getElementById(resultElementId).innerText = 'Không thể truy vấn dữ liệu';
+            } else {
+                deviceHistory.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.ID}</td>
+                        <td>${entry.Device}</td>
+                        <td>${entry.Action}</td>
+                        <td>${new Date(entry.Time).toLocaleString()}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
             }
         }
 
+        // Count actions for specific device and action type
+        function countDeviceAction(device, action, resultElementId) {
+            const tableRows = document.querySelectorAll('#deviceHistoryTableBody tr');
+            let count = 0;
+            tableRows.forEach(row => {
+                const deviceCell = row.cells[1]?.textContent || "";
+                const actionCell = row.cells[2]?.textContent || "";
+                if (deviceCell === device && actionCell === action) {
+                    count++;
+                }
+            });
+            document.getElementById(resultElementId).innerText = count;
+        }
+
+        // Fetch and display data when the page loads
         window.onload = async function() {
-            const sensorHistory = await fetchSensorHistory();
-            loadSensorHistory(sensorHistory);
+            const deviceHistory = await fetchDeviceHistory();
+            loadDeviceHistory(deviceHistory);
         };
     </script>
 </body>

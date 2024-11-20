@@ -14,7 +14,8 @@ const int ledPin = 2; // Chân GPIO 2 kết nối với LED
 
 const char* ssid = "VAP_0";
 const char* password = "00000000";
-const char* mqtt_server = "192.168.0.10";  // IP của máy tính hoặc server chứa MQTT Broker
+const char* mqtt_server = "192.168.0.10";  // IP của máy tính hoặc server chứa MQTT BBroker/
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -142,7 +143,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
         } else if (message == "led3_on") {
             digitalWrite(ledPin3, HIGH);  // Bật LED 3
             Serial.println("Đã nhận lệnh: Bật LED 3");
-        } else if (message == "led3_off") {
+        } else if (message == "led3_off") { 
             digitalWrite(ledPin3, LOW);  // Tắt LED 3
             Serial.println("Đã nhận lệnh: Tắt LED 3");
         } 

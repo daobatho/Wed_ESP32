@@ -3,7 +3,6 @@ const mysql = require('mysql2');
 const mqtt = require('mqtt');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors()); // Enable CORS for all requests
@@ -137,7 +136,7 @@ app.post('/api/control_fan', (req, res) => {
 // API to get sensor history
 app.get('/api/sensor_history', (req, res) => {
   dbSensor.query(
-      'SELECT * FROM sensor_data ORDER BY id DESC LIMIT 10', // Sửa LIMIT theo số lượng bản ghi bạn muốn lấy
+      'SELECT * FROM sensor_data ORDER BY id DESC LIMIT 100', // Sửa LIMIT theo số lượng bản ghi bạn muốn lấy
       (err, results) => {
           if (err) {
               console.error('Error fetching sensor history:', err);
@@ -151,7 +150,7 @@ app.get('/api/sensor_history', (req, res) => {
 // API to get device history
 app.get('/api/device_history', (req, res) => {
   dbDevices.query(
-      'SELECT * FROM HistoryDevice ORDER BY ID DESC LIMIT 10', // Sửa LIMIT theo số lượng bản ghi bạn muốn lấy
+      'SELECT * FROM HistoryDevice ORDER BY ID DESC LIMIT 100', // Sửa LIMIT theo số lượng bản ghi bạn muốn lấy
       (err, results) => {
           if (err) {
               console.error('Error fetching device history:', err);

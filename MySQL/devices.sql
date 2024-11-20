@@ -8,5 +8,13 @@ USE devices;
     Time DATETIME
 );*/
 
-INSERT INTO HistoryDevice (Device, Action, Time) VALUES ('toan', 'qa', NOW());
-SELECT * FROM HistoryDevice;
+SELECT 
+    Device,
+    Action,
+    COUNT(*) AS Count
+FROM 
+    HistoryDevice
+WHERE 
+    Device IN ('LED', 'FAN')
+GROUP BY 	
+    Device, Action;
