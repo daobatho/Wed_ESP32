@@ -58,17 +58,51 @@ mqttClient.on('connect', () => {
 mqttClient.on('message', (topic, message) => {
     if (topic === MQTT_TOPIC_SENSORS) {
         const data = JSON.parse(message.toString());
-        const { temperature, humidity, light } = data;
+        const { temperature, humidity, light, gas, infrared, new_light } = data;
 
-        if (temperature !== undefined && humidity !== undefined && light !== undefined) {
+        if (
+            temperature !== undefined &&
+            humidity !== undefined &&
+            light !== undefined &&
+            gas !== undefined &&
+            infrared !== undefined &&
+            new_light !== undefined
+        ) {
+            // Lưu dữ liệu cảm biến vào cơ sở dữ liệu
             dbSensor.query(
-                'INSERT INTO sensor_data (Temp, Humid, Light) VALUES (?, ?, ?)',
-                [temperature, humidity, light],
+                'INSERT INTO sensor_data (Temp, Humid, Light, gas, infrared, new_light) VALUES (?, ?, ?, ?, ?, ?)',
+                [temperature, humidity, light, gas, infrared, new_light],
                 (err) => {
-                    if (err) console.error('Error saving sensor data:', err);
-                    else console.log(`Data saved: Temperature=${temperature}, Humidity=${humidity}, Light=${light}`);
+                    if (err) {
+                        console.error('Error saving sensor data:', err);
+                    } else {
+                        console.log(
+                            `Data saved: Temperature=${temperature}, Humidity=${humidity}, Light=${light}, Gas=${gas}, Infrared=${infrared}, New Light=${new_light}`
+                        );
+                    }
                 }
             );
+
+            // Kiểm tra nếu khí gas > 70 thì gửi lệnh bật nhấp nháy LED
+            if (gas > 70) {
+                console.log('Gas level is high, sending blink command to LED');
+                mqttClient.publish(MQTT_TOPIC_OUTPUT, 'blink_on', (err) => {
+                    if (err) {
+                        console.error('Error publishing blink command to MQTT:', err);
+                    } else {
+                        console.log('Blink command sent to LED');
+                    }
+                });
+            } else {
+                // Nếu khí gas không còn quá cao, tắt LED (nếu cần thiết)
+                mqttClient.publish(MQTT_TOPIC_OUTPUT, 'blink_off', (err) => {
+                    if (err) {
+                        console.error('Error publishing turn off command to MQTT:', err);
+                    } else {
+                        console.log('LED turned off');
+                    }
+                });
+            }
         } else {
             console.log('Received incomplete data');
         }
@@ -165,17 +199,25 @@ app.get('/api/device_history', (req, res) => {
 // API to get latest sensor data
 app.get('/api/latest_sensor_data', (req, res) => {
     dbSensor.query(
-        'SELECT Temp, Humid, Light FROM sensor_data ORDER BY id DESC LIMIT 1',
+        'SELECT Temp, Humid, Light, gas, infrared, new_light FROM sensor_data ORDER BY id DESC LIMIT 1',
         (err, results) => {
             if (err) return res.status(500).json({ error: 'Internal Server Error' });
             if (results.length > 0) {
-                const { Temp, Humid, Light } = results[0];
-                res.json({ temperature: Temp, humidity: Humid, light: Light });
+                const { Temp, Humid, Light, gas, infrared, new_light } = results[0];
+                res.json({
+                    temperature: Temp,
+                    humidity: Humid,
+                    light: Light,
+                    gas: gas,
+                    infrared: infrared,
+                    new_light: new_light
+                });
             } else {
                 res.status(404).json({ error: 'No data found' });
             }
         }
     );
+    
 });
 
 // Start the server

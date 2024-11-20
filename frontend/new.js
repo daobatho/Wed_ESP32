@@ -1,13 +1,12 @@
 const apiUrl = 'http://192.168.0.10:5000/api/latest_sensor_data'; // Đường dẫn đến API
 const ledUrl = 'http://192.168.0.10:5000/api/control_led'; // Đường dẫn đến API điều khiển LED
-const fanUrl = 'http://192.168.0.10:5000/api/control_fan'; // API điều khiển FAN
+//const fanUrl = 'http://192.168.0.10:5000/api/control_fan'; // API điều khiển FAN
 
 let ledState = 'off'; // Trạng thái ban đầu của LED
 let fanState = 'off'; // Trạng thái ban đầu của FAN
 
 // Khởi tạo nhãn cho trục x (thời gian)
 let labels = [];
-let currentIndex = 0; // Đánh dấu vị trí hiện tại trong mảng dữ liệu
 
 // Tạo nhãn thời gian cho mỗi lần cập nhật
 function addTimeLabel() {
@@ -21,17 +20,17 @@ const data = {
     labels: labels,
     datasets: [
         {
-            label: 'Nhiệt độ (°C)',
+            label: 'Khí Gas (ppm)',
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            data: [], // Mảng dữ liệu nhiệt độ
+            data: [], // Mảng dữ liệu khí gas
             fill: true
         },
         {
-            label: 'Độ ẩm (%)',
+            label: 'Hồng Ngoại',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
-            data: [], // Mảng dữ liệu độ ẩm
+            data: [], // Mảng dữ liệu hồng ngoại
             fill: true
         },
         {
@@ -109,23 +108,32 @@ function updateData() {
         .then(response => response.json())
         .then(data => {
             console.log(data); // Xem dữ liệu nhận được
-            if (data && data.temperature !== undefined && data.humidity !== undefined && data.light !== undefined) {
+            if (data && data.gas !== undefined && data.infrared !== undefined && data.new_light !== undefined) {
                 // Cập nhật dữ liệu cảm biến lên giao diện web
-                document.getElementById('tempValue').textContent = `${data.temperature}°C`;
-                document.getElementById('humidityValue').textContent = `${data.humidity}%`;
-                document.getElementById('lightValue').textContent = `${data.light} lux`;
-
+                document.getElementById('gasValue').textContent = `${data.gas} ppm`;
+                document.getElementById('infraredValue').textContent = `${data.infrared}`;
+                document.getElementById('new_lightValue').textContent = `${data.new_light} lux`;
 
                 // Thêm nhãn thời gian cho mỗi lần cập nhật
                 addTimeLabel();
 
                 // Cập nhật dữ liệu vào biểu đồ
-                sensorChart.data.datasets[0].data.push(data.temperature);
-                sensorChart.data.datasets[1].data.push(data.humidity);
-                sensorChart.data.datasets[2].data.push(data.light);
+                sensorChart.data.datasets[0].data.push(data.gas);
+                sensorChart.data.datasets[1].data.push(data.infrared);
+                sensorChart.data.datasets[2].data.push(data.new_light);
 
                 // Cập nhật biểu đồ
                 sensorChart.update();
+
+                // Cập nhật màu sắc cảnh báo khi mức khí gas lớn hơn 70
+                const warningIcon = document.getElementById('warningIcon');
+                if (data.gas > 70) {
+                    // Đổi màu bóng đèn khi gas > 70 và bật hiệu ứng nhấp nháy
+                    warningIcon.classList.add('warning-on');
+                } else {
+                    // Trở lại màu trắng và tắt hiệu ứng nhấp nháy khi gas <= 70
+                    warningIcon.classList.remove('warning-on');
+                }
             } else {
                 console.error('Dữ liệu không hợp lệ:', data);
             }
@@ -169,15 +177,6 @@ function toggleFan() {
     .catch(error => console.error('Lỗi:', error));
 }
 
-function showNotification(message) {
-    const notificationDiv = document.getElementById('notification');
-    notificationDiv.textContent = message;
-    notificationDiv.style.display = 'block'; // Hiển thị thông báo
-    setTimeout(() => {
-        notificationDiv.style.display = 'none'; // Ẩn thông báo sau 3 giây
-    }, 3000);
-}
-
 // Lắng nghe sự kiện click vào nút điều khiển LED và FAN
 document.getElementById('btnLedControl').addEventListener('click', toggleLed);
 document.getElementById('btnFanControl').addEventListener('click', toggleFan);
@@ -185,7 +184,7 @@ document.getElementById('btnFanControl').addEventListener('click', toggleFan);
 // Bắt đầu lấy dữ liệu khi trang được tải
 function startDataFetching() {
     updateData(); // Gọi hàm lấy dữ liệu một lần đầu tiên
-    setInterval(updateData, 10000); // Gọi lại sau mỗi 10 giây
+    setInterval(updateData, 5000); // Gọi lại sau mỗi 5 giây
 }
 
 // Khởi động lấy dữ liệu khi trang tải

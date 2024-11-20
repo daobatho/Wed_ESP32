@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard with Temperature, Humidity, and Light</title>
+    <title>New Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="new.css">
 </head>
 <body>
     <!-- Thanh danh mục -->
@@ -21,34 +21,39 @@
     <!-- Thông tin -->
     <div class="content-container">
         <div class="dashboard-container">
-            <div class="info-box temp">
-                <h2><i class="fas fa-thermometer-half"></i> Nhiệt Độ</h2>
-                <p id="tempValue">--°C</p>
+            <!-- Hộp hiển thị thông số khí gas -->
+            <div class="info-box gas">
+                <h2><i class="fas fa-wind"></i> GAS</h2>
+                <p id="gasValue">--ppm</p>
             </div>
-            <div class="info-box humidity">
-                <h2><i class="fas fa-tint"></i> Độ Ẩm</h2>
-                <p id="humidityValue">--%</p>
+            <!-- Hộp hiển thị thông số hồng ngoại -->
+            <div class="info-box infrared">
+                <h2><i class="fas fa-rss"></i> Hồng Ngoại</h2>
+                <p id="infraredValue">--%</p>
             </div>
-            <div class="info-box light">
-                <h2><i class="fas fa-sun"></i>Ánh Sáng</h2>
-                <p id="lightValue">-- lux</p>
+            <!-- Hộp hiển thị độ sáng -->
+            <div class="info-box new_light">
+                <h2><i class="fas fa-sun"></i> Ánh Sáng</h2>
+                <p id="new_lightValue">-- lux</p>
             </div>
+            <!-- Hộp điều khiển LED -->
             <div class="info-box led-control" id="btnLedControl">
                 <h2><i class="fas fa-lightbulb"></i> LED</h2>
                 <p id="ledStatus">--</p>
             </div>
-            <div class="info-box fan-control" id="btnFanControl">
-                <h2><i class="fas fa-fan"></i> FAN</h2>
-                <p id="fanStatus">--</p>
+            <!-- Hộp cảnh báo khí gas -->
+            <div class="info-box warning-box" id="btnFanControl">
+                <i class="fas fa-lightbulb" id="warningIcon"></i>
             </div>
         </div>
 
+        <!-- Biểu đồ -->
         <div class="chart-container">
             <canvas id="sensorChart"></canvas>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+    <script src="new.js"></script>
 </body>
 </html>
