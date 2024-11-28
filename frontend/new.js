@@ -1,9 +1,7 @@
 const apiUrl = 'http://192.168.0.10:5000/api/latest_sensor_data'; // Đường dẫn đến API
-const ledUrl = 'http://192.168.0.10:5000/api/control_led'; // Đường dẫn đến API điều khiển LED
-//const fanUrl = 'http://192.168.0.10:5000/api/control_fan'; // API điều khiển FAN
+const ledUrl = 'http://192.168.0.10:5000/api/control_led1'; // Đường dẫn đến API điều khiển LED
 
 let ledState = 'off'; // Trạng thái ban đầu của LED
-let fanState = 'off'; // Trạng thái ban đầu của FAN
 
 // Khởi tạo nhãn cho trục x (thời gian)
 let labels = [];
@@ -20,26 +18,12 @@ const data = {
     labels: labels,
     datasets: [
         {
-            label: 'Khí Gas (ppm)',
+            label: 'Wind Speed (m/s)',
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
             data: [], // Mảng dữ liệu khí gas
             fill: true
         },
-        {
-            label: 'Hồng Ngoại',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            data: [], // Mảng dữ liệu hồng ngoại
-            fill: true
-        },
-        {
-            label: 'Độ sáng (lux)',
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            data: [], // Mảng dữ liệu độ sáng
-            fill: true
-        }
     ]
 };
 
@@ -108,23 +92,26 @@ function updateData() {
         .then(response => response.json())
         .then(data => {
             console.log(data); // Xem dữ liệu nhận được
-            if (data && data.gas !== undefined && data.infrared !== undefined && data.new_light !== undefined) {
+            if (data && data.gas !== undefined ) {
                 // Cập nhật dữ liệu cảm biến lên giao diện web
-                document.getElementById('gasValue').textContent = `${data.gas} ppm`;
-                document.getElementById('infraredValue').textContent = `${data.infrared}`;
-                document.getElementById('new_lightValue').textContent = `${data.new_light} lux`;
+                document.getElementById('gasValue').textContent = `${data.gas} m/S`;
 
                 // Thêm nhãn thời gian cho mỗi lần cập nhật
                 addTimeLabel();
 
                 // Cập nhật dữ liệu vào biểu đồ
                 sensorChart.data.datasets[0].data.push(data.gas);
-                sensorChart.data.datasets[1].data.push(data.infrared);
-                sensorChart.data.datasets[2].data.push(data.new_light);
 
                 // Cập nhật biểu đồ
                 sensorChart.update();
+                // Giới hạn mảng chỉ chứa 6 giá trị
+                if (sensorChart.data.datasets[0].data.length > 6) {
+                    sensorChart.data.datasets[0].data.shift(); // Loại bỏ phần tử đầu tiên
+                    sensorChart.data.labels.shift(); // Loại bỏ nhãn đầu tiên
+                }
 
+                // Cập nhật biểu đồ
+                sensorChart.update();
                 // Cập nhật màu sắc cảnh báo khi mức khí gas lớn hơn 70
                 const warningIcon = document.getElementById('warningIcon');
                 if (data.gas > 70) {
@@ -144,6 +131,7 @@ function updateData() {
 // Gửi yêu cầu điều khiển LED
 function toggleLed() {
     ledState = ledState === 'on' ? 'off' : 'on';
+
     fetch(ledUrl, {
         method: 'POST',
         headers: {
@@ -154,32 +142,25 @@ function toggleLed() {
     .then(response => response.json())
     .then(data => {
         console.log(`LED turned ${ledState}`);
-        document.getElementById('ledStatus').textContent = ledState === 'on' ? '✓' : '✗';
+        
+        const ledIcon = document.getElementById('ledIcon');
+
+        // Cập nhật trạng thái LED trên giao diện
+        if (ledState === 'on') {
+            ledIcon.classList.add('led-on'); // Thêm lớp để đổi màu và hiệu ứng
+        } else {
+            ledIcon.classList.remove('led-on'); // Xóa lớp hiệu ứng khi tắt LED
+        }
     })
     .catch(error => console.error('Lỗi:', error));
 }
 
-// Gửi yêu cầu điều khiển FAN
-function toggleFan() {
-    fanState = fanState === 'on' ? 'off' : 'on';
-    fetch(fanUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: fanState })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(`FAN turned ${fanState}`);
-        document.getElementById('fanStatus').textContent = fanState === 'on' ? '✓' : '✗';
-    })
-    .catch(error => console.error('Lỗi:', error));
-}
+// Lắng nghe sự kiện click vào nút điều khiển LED
+document.getElementById('btnLedControl').addEventListener('click', toggleLed);
+
 
 // Lắng nghe sự kiện click vào nút điều khiển LED và FAN
 document.getElementById('btnLedControl').addEventListener('click', toggleLed);
-document.getElementById('btnFanControl').addEventListener('click', toggleFan);
 
 // Bắt đầu lấy dữ liệu khi trang được tải
 function startDataFetching() {

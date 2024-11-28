@@ -20,38 +20,28 @@
     
     <!-- Thông tin -->
     <div class="content-container">
+        <!-- Khối hiển thị thông số và cảnh báo -->
         <div class="dashboard-container">
-            <!-- Hộp hiển thị thông số khí gas -->
             <div class="info-box gas">
-                <h2><i class="fas fa-wind"></i> GAS</h2>
-                <p id="gasValue">--ppm</p>
-            </div>
-            <!-- Hộp hiển thị thông số hồng ngoại -->
-            <div class="info-box infrared">
-                <h2><i class="fas fa-rss"></i> Hồng Ngoại</h2>
-                <p id="infraredValue">--%</p>
-            </div>
-            <!-- Hộp hiển thị độ sáng -->
-            <div class="info-box new_light">
-                <h2><i class="fas fa-sun"></i> Ánh Sáng</h2>
-                <p id="new_lightValue">-- lux</p>
-            </div>
-            <!-- Hộp điều khiển LED -->
-            <div class="info-box led-control" id="btnLedControl">
-                <h2><i class="fas fa-lightbulb"></i> LED</h2>
-                <p id="ledStatus">--</p>
-            </div>
-            <!-- Hộp cảnh báo khí gas -->
-            <div class="info-box warning-box" id="btnFanControl">
-                <i class="fas fa-lightbulb" id="warningIcon"></i>
+                <h2><i class="fas fa-wind"></i> Wind Speed <i class="fas fa-lightbulb" id="warningIcon"></i></h2>
+                <p id="gasValue">-- m/s</p>
             </div>
         </div>
-
+    
         <!-- Biểu đồ -->
         <div class="chart-container">
             <canvas id="sensorChart"></canvas>
         </div>
+    
+        <!-- Khối bật tắt LED -->
+        <div class="dashboard-container">
+            <div class="info-box led-control" id="btnLedControl">
+                <h2><i class="fas fa-lightbulb" id="ledIcon"></i> LED</h2>
+                <p id="ledStatus">OFF</p>
+            </div>
+        </div>
     </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="new.js"></script>

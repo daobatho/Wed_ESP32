@@ -4,9 +4,11 @@ body {
     padding: 0;
     height: 100vh; /* Sử dụng 100% chiều cao màn hình */
     background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%);
-    font-family: 'Open Sans', sans-serif; /* Font chữ phù hợp cho web */
-    display: flex; /* Sử dụng flex để căn chỉnh */
-    flex-direction: column; /* Định hướng flex theo cột */
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column; /* Định hướng theo cột */
+    align-items: center; /* Canh giữa theo trục ngang */
+    justify-content: start; /* Căn phần tử theo trục dọc */
 }
 
 /* Đặt các thuộc tính cho thanh điều hướng */
@@ -21,7 +23,7 @@ nav {
     top: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Thêm khoảng trống giữa các phần tử */
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -44,16 +46,16 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-size: 18px;
-    transition: color 0.3s ease; /* Thêm hiệu ứng chuyển màu khi hover */
+    transition: color 0.3s ease;
 }
 
 /* Thay đổi kiểu liên kết khi di chuột qua */
 nav ul li a:hover {
-    color: #ffdb4d; /* Thêm màu vàng nhạt khi hover */
+    color: #ffdb4d;
     text-decoration: underline;
 }
 
-/* Đặt các thuộc tính cho khối chứa nội dung chính */
+/* Đặt thuộc tính cho khối chứa nội dung chính */
 .content-container {
     margin-left: 70px; /* Để lại không gian cho thanh điều hướng */
     width: calc(100% - 70px); /* Chiều rộng 100% trừ thanh điều hướng */
@@ -61,30 +63,31 @@ nav ul li a:hover {
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    gap: 20px; /* Khoảng cách giữa các phần tử trong container */
 }
 
-/* Đặt các thuộc tính cho khối chứa dashboard */
+/* Đặt các thuộc tính cho khối hiển thị thông tin và cảnh báo */
 .dashboard-container {
     display: flex;
     flex-wrap: wrap; /* Cho phép xuống hàng khi không đủ chỗ */
-    gap: 30px; /* Giảm khoảng cách giữa các hộp thông tin */
-    margin-top: 50px;
-    justify-content: center; /* Canh giữa các hộp trên màn hình */
+    gap: 20px; /* Khoảng cách giữa các hộp */
+    justify-content: center;
+    width: 100%;
 }
 
-/* Đặt thuộc tính cho các hộp thông tin */
+/* Đặt các thuộc tính cho hộp thông tin */
 .info-box {
     width: 200px;
-    padding: 15px; /* Thêm khoảng đệm */
+    padding: 15px;
     background-color: #007bff;
     border-radius: 8px;
     color: white;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Thêm hiệu ứng hover */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Thêm hiệu ứng phóng to và bóng đổ khi hover vào các hộp thông tin */
+/* Thêm hiệu ứng phóng to và bóng đổ khi hover */
 .info-box:hover {
     transform: scale(1.05);
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
@@ -107,107 +110,65 @@ nav ul li a:hover {
     align-items: center;
 }
 
-/* Đặt khoảng cách cho biểu tượng trong hộp thông tin */
-.info-box p i {
-    margin-left: 10px;
-}
-
 /* Đặt màu nền cho các loại hộp thông tin khác nhau */
 .info-box.gas {
     background-color: #17a2b8;
 }
 
-.info-box.infrared {
+.info-box.led-control {
     background-color: #28a745;
 }
-
-.info-box.new_light {
-    background-color: #ff851b;
-}
-
-.info-box h2 i {
-    color: #ffd700; /* Màu vàng cho biểu tượng LED */
-    font-size: 40px; /* Kích thước biểu tượng */
-    margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
-}
-
-.fan-control h2 i {
-    color: #00bfff; /* Màu xanh cho biểu tượng FAN */
-}
-
 
 /* Đặt các thuộc tính cho khối chứa biểu đồ */
 .chart-container {
     width: 100%;
     max-width: 800px;
-    margin-top: 50px; /* Điều chỉnh khoảng cách phía trên biểu đồ */
+    background: #f2f3f2;
+    border-radius: 10px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 auto;
 }
 
 /* Đặt các thuộc tính cho biểu đồ */
 canvas {
-    background: #f2f3f2;
+    background: #f9f9f9;
     border-radius: 10px;
-    padding: 20px;
-}
-#notification {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #28a745;  /* Màu nền mặc định là xanh lá */
-    color: white;  /* Màu chữ */
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;  /* Ẩn thông báo mặc định */
-    font-size: 18px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;  /* Đảm bảo thông báo nằm trên các phần tử khác */
-}
-/* Định dạng ban đầu cho hộp cảnh báo */
-.info-box.warning-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 200px; /* Đặt chiều rộng giống với các hộp thông tin khác */
-    padding: 15px; /* Thêm khoảng đệm giống như các hộp khác */
-    background-color: #f0f0f0; /* Màu nền xám nhạt */
-    border-radius: 8px;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Thêm hiệu ứng hover */
+    padding: 10px;
+    width: 100%;
 }
 
-/* Biểu tượng đèn cảnh báo ban đầu màu trắng */
+/* Định dạng biểu tượng cảnh báo */
 #warningIcon {
     font-size: 40px;
-    color: white;  /* Màu trắng ban đầu */
-    transition: color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+    color: white;
+    transition: color 0.3s ease;
 }
 
 /* Khi có cảnh báo, đổi màu bóng đèn thành đỏ và nhấp nháy */
 #warningIcon.warning-on {
-    color: red;  /* Màu đỏ khi có cảnh báo */
-    animation: pulse 1s infinite;  /* Thêm hiệu ứng nhấp nháy */
+    animation: blink 0.25s step-start 6;
 }
 
-/* Hiệu ứng nhấp nháy cho bóng đèn */
-@keyframes pulse {
-    0% {
-        opacity: 1;
+/* Hiệu ứng nhấp nháy */
+@keyframes blink {
+    0%, 100% {
+        color: red;
     }
     50% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
+        color: white;
     }
 }
 
-/* Thêm hiệu ứng phóng to và bóng đổ khi hover vào hộp cảnh báo */
-.info-box.warning-box:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+/* Hiệu ứng LED bật/tắt */
+.led-on {
+    color: #ffdb4d;
+    text-shadow: 0 0 10px rgba(255, 219, 77, 0.7);
+}
+
+.led-off {
+    color: #808080;
+    text-shadow: none;
 }
