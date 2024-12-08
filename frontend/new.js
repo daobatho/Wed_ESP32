@@ -129,7 +129,9 @@ function updateData() {
 }
 
 // Gửi yêu cầu điều khiển LED
+// Gửi yêu cầu điều khiển LED
 function toggleLed() {
+    // Đảo trạng thái của LED
     ledState = ledState === 'on' ? 'off' : 'on';
 
     fetch(ledUrl, {
@@ -137,23 +139,27 @@ function toggleLed() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status: ledState })
+        body: JSON.stringify({ status: ledState }) // Gửi trạng thái LED mới
     })
     .then(response => response.json())
     .then(data => {
         console.log(`LED turned ${ledState}`);
         
         const ledIcon = document.getElementById('ledIcon');
+        const ledStatus = document.getElementById('ledStatus');  // Lấy phần tử hiển thị trạng thái
 
         // Cập nhật trạng thái LED trên giao diện
         if (ledState === 'on') {
-            ledIcon.classList.add('led-on'); // Thêm lớp để đổi màu và hiệu ứng
+            ledIcon.classList.add('led-on'); // Thêm lớp để đổi màu và hiệu ứng khi LED bật
+            ledStatus.textContent = 'ON';    // Cập nhật chữ thành "ON"
         } else {
             ledIcon.classList.remove('led-on'); // Xóa lớp hiệu ứng khi tắt LED
+            ledStatus.textContent = 'OFF';   // Cập nhật chữ thành "OFF"
         }
     })
     .catch(error => console.error('Lỗi:', error));
 }
+
 
 // Lắng nghe sự kiện click vào nút điều khiển LED
 document.getElementById('btnLedControl').addEventListener('click', toggleLed);
