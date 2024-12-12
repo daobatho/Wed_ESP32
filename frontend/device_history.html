@@ -15,6 +15,7 @@
             display: flex;
             flex-direction: column;
         }
+        /* Thanh điều hướng bên trái */
         nav {
             width: 70px;
             background-color: #333;
@@ -46,10 +47,12 @@
         nav ul li a:hover {
             text-decoration: underline;
         }
+        /* Nội dung chính của trang */
         .content-container {
             margin-left: 70px;
             padding: 20px;
         }
+        /* Thanh truy vấn cho các nút tìm kiếm */
         .query-container {
             margin-bottom: 20px;
             display: flex;
@@ -60,6 +63,7 @@
             padding: 10px;
             font-size: 16px;
         }
+        /* Hiển thị kết quả truy vấn */
         .result-display {
             padding: 10px;
             background: rgba(255, 255, 255, 0.1);
@@ -70,7 +74,8 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .table-container { /*lịch sử thiết bị*/
+        /* Bảng hiển thị lịch sử thiết bị */
+        .table-container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 10px;
@@ -125,7 +130,7 @@
     </style>
 </head>
 <body>
-    <!-- Thanh danh mục -->
+    <!-- Thanh điều hướng bên trái -->
     <nav>
         <ul>
             <li><a href="index.html" target="_self">HOME</a></li>
@@ -136,21 +141,26 @@
     </nav>
 
     <div class="content-container">
-        <!-- Thanh truy vấn -->
+        <!-- Thanh truy vấn với các nút tìm kiếm cho các hành động thiết bị -->
         <div class="query-container">
+            <!-- Nút đếm số lần LED bật -->
             <button onclick="countDeviceAction('LED', 'Bật', 'ledOnCount')">Đếm LED Bật</button>
             <span id="ledOnCount" class="result-display">0</span>
 
+            <!-- Nút đếm số lần LED tắt -->
             <button onclick="countDeviceAction('LED', 'Tắt', 'ledOffCount')">Đếm LED Tắt</button>
             <span id="ledOffCount" class="result-display">0</span>
 
+            <!-- Nút đếm số lần FAN bật -->
             <button onclick="countDeviceAction('FAN', 'Bật', 'fanOnCount')">Đếm FAN Bật</button>
             <span id="fanOnCount" class="result-display">0</span>
 
+            <!-- Nút đếm số lần FAN tắt -->
             <button onclick="countDeviceAction('FAN', 'Tắt', 'fanOffCount')">Đếm FAN Tắt</button>
             <span id="fanOffCount" class="result-display">0</span>
         </div>
 
+        <!-- Bảng hiển thị lịch sử thiết bị -->
         <div class="table-container">
             <h1>Lịch sử Thiết bị</h1>
             <table>
@@ -163,14 +173,14 @@
                     </tr>
                 </thead>
                 <tbody id="deviceHistoryTableBody">
-                    <!-- Dữ liệu thiết bị sẽ được thêm vào đây -->
+                    <!-- Dữ liệu lịch sử thiết bị sẽ được thêm vào đây -->
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // Fetch device history from API
+        // Hàm lấy lịch sử thiết bị từ API
         async function fetchDeviceHistory() {
             try {
                 const response = await fetch('http://127.0.0.1:5000/api/device_history');
@@ -183,16 +193,18 @@
             }
         }
 
-        // Load device history into the table
+        // Hàm tải và hiển thị dữ liệu lịch sử thiết bị vào bảng
         function loadDeviceHistory(deviceHistory) {
             const tableBody = document.getElementById('deviceHistoryTableBody');
-            tableBody.innerHTML = ''; // Clear previous data
+            tableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
 
             if (deviceHistory.length === 0) {
+                // Nếu không có dữ liệu, hiển thị dòng thông báo không có dữ liệu
                 const row = document.createElement('tr');
                 row.innerHTML = `<td colspan="4" style="text-align: center;">Không có dữ liệu</td>`;
                 tableBody.appendChild(row);
             } else {
+                // Lặp qua từng bản ghi và tạo các dòng trong bảng
                 deviceHistory.forEach(entry => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -206,7 +218,7 @@
             }
         }
 
-        // Count actions for specific device and action type
+        // Hàm đếm số lần thiết bị thực hiện một hành động (LED bật/tắt, FAN bật/tắt)
         function countDeviceAction(device, action, resultElementId) {
             const tableRows = document.querySelectorAll('#deviceHistoryTableBody tr');
             let count = 0;
@@ -217,10 +229,11 @@
                     count++;
                 }
             });
+            // Hiển thị kết quả đếm vào phần tử kết quả
             document.getElementById(resultElementId).innerText = count;
         }
 
-        // Fetch and display data when the page loads
+        // Hàm tải và hiển thị dữ liệu khi trang được tải
         window.onload = async function() {
             const deviceHistory = await fetchDeviceHistory();
             loadDeviceHistory(deviceHistory);

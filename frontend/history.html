@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History Sensors</title>
+    <title>Lịch sử Cảm biến</title>
+    <!-- Liên kết đến thư viện font-awesome để sử dụng các biểu tượng -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Kiểu dáng chung cho toàn bộ trang, bao gồm nền và cách sắp xếp */
         body {
             margin: 0;
             padding: 0;
@@ -15,6 +17,8 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Kiểu dáng cho thanh điều hướng bên trái */
         nav {
             width: 70px;
             background-color: #333;
@@ -28,39 +32,52 @@
             flex-direction: column;
             align-items: center;
         }
+
+        /* Kiểu dáng cho danh sách các liên kết trong thanh điều hướng */
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
             width: 100%;
         }
+
         nav ul li {
             margin: 15px 0;
             text-align: center;
         }
+
         nav ul li a {
             color: white;
             text-decoration: none;
             font-size: 18px;
         }
+
+        /* Kiểu dáng cho các liên kết khi di chuột qua */
         nav ul li a:hover {
             text-decoration: underline;
         }
+
+        /* Kiểu dáng cho phần nội dung chính của trang */
         .content-container {
             margin-left: 70px;
             padding: 20px;
         }
+
+        /* Kiểu dáng cho các khối tìm kiếm dữ liệu */
         .query-container {
             margin-bottom: 20px;
             display: flex;
             gap: 15px;
             align-items: center;
         }
+
         .query-container button {
             padding: 8px;
             font-size: 14px;
             width: 150px;
         }
+
+        /* Kiểu dáng cho khu vực hiển thị kết quả tìm kiếm */
         .query-container .result-display {
             padding: 10px;
             font-size: 14px;
@@ -71,6 +88,8 @@
             white-space: normal;
             overflow-wrap: break-word;
         }
+
+        /* Kiểu dáng cho bảng dữ liệu cảm biến */
         .table-container {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -78,11 +97,14 @@
             max-height: 500px;
             overflow: hidden;
         }
+
         h1 {
             color: white;
             font-size: 24px;
             text-align: center;
         }
+
+        /* Kiểu dáng cho bảng dữ liệu */
         table {
             border-collapse: collapse;
             width: 100%;
@@ -90,6 +112,8 @@
             margin: auto;
             table-layout: fixed;
         }
+
+        /* Kiểu dáng cho các ô trong bảng */
         th, td {
             border: 1px solid white;
             padding: 10px;
@@ -98,27 +122,36 @@
             word-wrap: break-word;
             white-space: nowrap;
         }
+
+        /* Kiểu dáng cho các tiêu đề cột */
         th {
             background-color: rgba(255, 255, 255, 0.2);
         }
+
+        /* Kiểu dáng cho các dòng chẵn trong bảng */
         tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.1);
         }
+
         thead {
             display: block;
         }
+
         tbody {
             display: block;
             max-height: 420px;
             overflow-y: auto;
         }
+
         thead th, tbody td {
             min-width: 185px;
         }
+
         tbody td:nth-child(1),
         thead th:nth-child(1) {
             min-width: 80px;
         }
+
         tbody td:nth-child(4),
         thead th:nth-child(4) {
             min-width: 250px;
@@ -126,6 +159,7 @@
     </style>
 </head>
 <body>
+    <!-- Thanh điều hướng bên trái -->
     <nav>
         <ul>
             <li><a href="index.html" target="_self">HOME</a></li>
@@ -135,8 +169,10 @@
         </ul>
     </nav>
 
+    <!-- Phần nội dung chính của trang -->
     <div class="content-container">
         <div class="query-container">
+            <!-- Các nút tìm kiếm Max/Min cho các tham số cảm biến -->
             <button onclick="findMaxMin('Temp', 'tempResult')">Tìm Max/Min Nhiệt độ</button>
             <span id="tempResult" class="result-display">Kết quả sẽ hiển thị ở đây</span>
 
@@ -147,6 +183,7 @@
             <span id="lightResult" class="result-display">Kết quả sẽ hiển thị ở đây</span>
         </div>
 
+        <!-- Phần bảng hiển thị lịch sử dữ liệu cảm biến -->
         <div class="table-container">
             <h1>Lịch sử Cảm biến</h1>
             <table>
@@ -161,13 +198,14 @@
                     </tr>
                 </thead>
                 <tbody id="sensorHistoryTableBody">
-                    <!-- Dữ liệu cảm biến sẽ được thêm vào đây -->
+                    <!-- Dữ liệu cảm biến sẽ được thêm vào đây thông qua JavaScript -->
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
+        // Hàm lấy dữ liệu lịch sử cảm biến từ API
         async function fetchSensorHistory() {
             try {
                 const response = await fetch('http://127.0.0.1:5000/api/sensor_history');
@@ -176,10 +214,11 @@
                 return data;
             } catch (error) {
                 console.error('Lỗi:', error);
-                return [];
+                return []; // Trả về mảng rỗng nếu có lỗi
             }
         }
 
+        // Hàm hiển thị dữ liệu cảm biến lên bảng
         function loadSensorHistory(sensorHistory) {
             const tableBody = document.getElementById('sensorHistoryTableBody');
             tableBody.innerHTML = ''; // Xóa dữ liệu cũ trong bảng
@@ -199,25 +238,30 @@
             });
         }
 
+        // Hàm tìm giá trị Max/Min cho tham số nhất định (Temp, Humid, Light)
         async function findMaxMin(parameter, resultElementId) {
             try {
                 const response = await fetch('http://127.0.0.1:5000/api/sensor_history');
                 if (!response.ok) throw new Error('Mất kết nối với server');
                 const data = await response.json();
 
+                // Kiểm tra nếu không có dữ liệu
                 if (data.length === 0) {
                     document.getElementById(resultElementId).innerText = 'Không có dữ liệu để truy vấn';
                     return;
                 }
 
+                // Khởi tạo giá trị Max/Min ban đầu
                 let maxEntry = data[0];
                 let minEntry = data[0];
 
+                // Duyệt qua dữ liệu để tìm Max và Min
                 data.forEach(entry => {
                     if (entry[parameter] > maxEntry[parameter]) maxEntry = entry;
                     if (entry[parameter] < minEntry[parameter]) minEntry = entry;
                 });
 
+                // Hiển thị kết quả
                 document.getElementById(resultElementId).innerText = 
                     `Max: ${maxEntry[parameter]} (ID: ${maxEntry.id}), Min: ${minEntry[parameter]} (ID: ${minEntry.id})`;
             } catch (error) {
@@ -226,6 +270,7 @@
             }
         }
 
+        // Hàm tải lịch sử cảm biến khi trang được tải
         window.onload = async () => {
             const sensorHistory = await fetchSensorHistory();
             loadSensorHistory(sensorHistory);

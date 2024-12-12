@@ -1,169 +1,177 @@
-/* Đặt các thuộc tính cho thẻ body */
+/* Cấu hình cho body */
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh; /* Sử dụng 100% chiều cao màn hình */
-    background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%);
-    font-family: 'Open Sans', sans-serif; /* Font chữ phù hợp cho web */
-    display: flex; /* Sử dụng flex để căn chỉnh */
-    flex-direction: column; /* Định hướng flex theo cột */
-    overflow: hidden; /* Ẩn thanh cuộn cho phần biểu đồ */
+    margin: 0; /* Loại bỏ khoảng cách mặc định của trình duyệt */
+    padding: 0; /* Loại bỏ khoảng cách trong body */
+    height: 100vh; /* Đặt chiều cao của body chiếm toàn bộ chiều cao cửa sổ trình duyệt */
+    background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%); /* Màu nền gradient */
+    font-family: 'Open Sans', sans-serif; /* Font chữ sử dụng cho toàn bộ trang */
+    display: flex; /* Đặt body ở chế độ flexbox */
+    flex-direction: column; /* Chia nội dung thành cột */
+    overflow: hidden; /* Không hiển thị thanh cuộn */
 }
 
-/* Đặt các thuộc tính cho thanh điều hướng */
+/* Thanh menu bên trái */
 nav {
-    width: 70px;
-    background-color: #333;
-    color: white;
-    padding: 15px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Thêm khoảng trống giữa các phần tử */
-    align-items: center;
+    width: 70px; /* Độ rộng thanh menu */
+    background-color: #333; /* Màu nền của thanh menu */
+    color: white; /* Màu chữ */
+    padding: 15px; /* Khoảng cách bên trong thanh menu */
+    height: 100vh; /* Chiều cao thanh menu chiếm toàn bộ màn hình */
+    position: fixed; /* Đặt thanh menu cố định */
+    left: 0; /* Gắn thanh menu vào bên trái */
+    top: 0; /* Gắn thanh menu lên trên cùng */
+    display: flex; /* Dùng flexbox để sắp xếp các phần tử bên trong */
+    flex-direction: column; /* Các phần tử bên trong sắp xếp theo chiều dọc */
+    justify-content: space-between; /* Chia khoảng cách đều giữa các phần tử */
+    align-items: center; /* Căn giữa các phần tử theo chiều ngang */
 }
 
-/* Đặt thuộc tính cho danh sách trong thanh điều hướng */
+/* Danh sách menu */
 nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+    list-style-type: none; /* Loại bỏ dấu chấm đầu dòng */
+    padding: 0; /* Loại bỏ khoảng cách trong danh sách */
+    margin: 0; /* Loại bỏ khoảng cách ngoài danh sách */
+    width: 100%; /* Chiều rộng của danh sách chiếm toàn bộ chiều rộng của menu */
 }
 
-/* Đặt thuộc tính cho các mục trong danh sách */
+/* Các mục trong menu */
 nav ul li {
-    margin: 15px 0;
-    text-align: center;
+    margin: 15px 0; /* Khoảng cách giữa các mục trong menu */
+    text-align: center; /* Căn giữa nội dung */
 }
 
-/* Đặt thuộc tính cho các liên kết trong thanh điều hướng */
+/* Liên kết trong menu */
 nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s ease; /* Thêm hiệu ứng chuyển màu khi hover */
+    color: white; /* Màu chữ */
+    text-decoration: none; /* Loại bỏ gạch chân */
+    font-size: 18px; /* Kích thước chữ */
+    transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ khi hover */
 }
 
-/* Thay đổi kiểu liên kết khi di chuột qua */
+/* Hiệu ứng khi hover vào liên kết trong menu */
 nav ul li a:hover {
-    color: #ffdb4d; /* Thêm màu vàng nhạt khi hover */
-    text-decoration: underline;
+    color: #ffdb4d; /* Màu chữ khi hover */
+    text-decoration: underline; /* Gạch chân khi hover */
 }
 
-/* Đặt các thuộc tính cho khối chứa nội dung chính */
+/* Phần chứa nội dung chính */
 .content-container {
-    margin-left: 70px; /* Để lại không gian cho thanh điều hướng */
-    width: calc(100% - 70px); /* Chiều rộng 100% trừ thanh điều hướng */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    margin-left: 70px; /* Khoảng cách bên trái để tránh che khuất thanh menu */
+    width: calc(100% - 70px); /* Chiều rộng của phần này sẽ là toàn bộ chiều rộng trừ chiều rộng của menu */
+    display: flex; /* Dùng flexbox để sắp xếp các phần tử */
+    flex-direction: column; /* Các phần tử được sắp xếp theo chiều dọc */
+    align-items: center; /* Căn giữa các phần tử theo chiều ngang */
+    padding: 20px; /* Khoảng cách trong phần chứa nội dung */
 }
 
-/* Đặt các thuộc tính cho khối chứa dashboard */
+/* Container chứa các hộp thông tin */
 .dashboard-container {
-    display: flex;
-    flex-wrap: wrap; /* Cho phép xuống hàng khi không đủ chỗ */
-    gap: 30px; /* Giảm khoảng cách giữa các hộp thông tin */
-    margin-top: 50px;
-    justify-content: center; /* Canh giữa các hộp trên màn hình */
+    display: flex; /* Dùng flexbox để sắp xếp các hộp */
+    flex-wrap: wrap; /* Cho phép các hộp tự động xuống dòng khi cần */
+    gap: 30px; /* Khoảng cách giữa các hộp */
+    margin-top: 50px; /* Khoảng cách từ trên xuống */
+    justify-content: center; /* Căn giữa các hộp */
 }
 
-/* Đặt thuộc tính cho các hộp thông tin */
+/* Các hộp thông tin cảm biến và điều khiển */
 .info-box {
-    width: 200px;
-    padding: 15px; /* Thêm khoảng đệm */
-    background-color: #007bff;
-    border-radius: 8px;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Thêm hiệu ứng hover */
+    width: 200px; /* Chiều rộng của mỗi hộp */
+    padding: 15px; /* Khoảng cách trong mỗi hộp */
+    background-color: #007bff; /* Màu nền mặc định */
+    border-radius: 8px; /* Bo góc hộp */
+    color: white; /* Màu chữ trong hộp */
+    text-align: center; /* Căn giữa nội dung trong hộp */
+    cursor: pointer; /* Con trỏ chuột thay đổi khi hover vào hộp */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng khi hover */
 }
 
-/* Thêm hiệu ứng phóng to và bóng đổ khi hover vào các hộp thông tin */
+/* Hiệu ứng khi hover vào hộp */
 .info-box:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05); /* Tăng kích thước hộp một chút */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng cho hộp */
 }
 
-/* Đặt thuộc tính cho tiêu đề trong hộp thông tin */
+/* Tiêu đề trong hộp */
 .info-box h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
+    margin: 0; /* Loại bỏ margin của tiêu đề */
+    font-size: 18px; /* Kích thước chữ */
+    font-weight: 600; /* Độ đậm của chữ */
 }
 
-/* Đặt thuộc tính cho phần nội dung trong hộp thông tin */
+/* Nội dung trong hộp */
 .info-box p {
-    margin: 10px 0 0;
-    font-size: 36px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 10px 0 0; /* Khoảng cách trên và dưới */
+    font-size: 36px; /* Kích thước chữ */
+    font-weight: bold; /* Độ đậm của chữ */
+    display: flex; /* Dùng flexbox để căn giữa nội dung */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
 
-/* Đặt khoảng cách cho biểu tượng trong hộp thông tin */
-.info-box p i {
-    margin-left: 10px;
-}
-
-/* Đặt màu nền cho các loại hộp thông tin khác nhau */
+/* Các kiểu màu cho từng loại hộp */
 .info-box.temp {
-    background-color: #17a2b8;
+    background-color: #17a2b8; /* Màu nền cho nhiệt độ */
 }
 
 .info-box.humidity {
-    background-color: #28a745;
+    background-color: #28a745; /* Màu nền cho độ ẩm */
 }
 
 .info-box.light {
-    background-color: #ff851b;
+    background-color: #ff851b; /* Màu nền cho ánh sáng */
 }
 
-.info-box h2 i {
-    color: #ffd700; /* Màu vàng cho biểu tượng LED */
-    font-size: 40px; /* Kích thước biểu tượng */
-    margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
+/* Kiểu cho điều khiển LED */
+.led-off i,
+.led-on i {
+    font-size: 40px; /* Kích thước biểu tượng LED */
+    color: #d3d3d3; /* Màu xám khi tắt LED */
 }
 
+.led-on i {
+    color: #ffcc00; /* Màu vàng khi bật LED */
+}
+
+/* Kiểu cho điều khiển quạt */
 .fan-control h2 i {
-    color: #00bfff; /* Màu xanh cho biểu tượng FAN */
+    font-size: 40px; /* Kích thước biểu tượng quạt */
+    color: #00bfff; /* Màu của quạt */
 }
 
+/* Kích thước biểu tượng trong hộp thông tin */
+.info-box h2 i {
+    font-size: 40px; /* Kích thước biểu tượng */
+}
 
-/* Đặt các thuộc tính cho khối chứa biểu đồ */
+/* Container chứa biểu đồ */
 .chart-container {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 50px; /* Điều chỉnh khoảng cách phía trên biểu đồ */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%; /* Chiều rộng của phần biểu đồ */
+    max-width: 800px; /* Đặt giới hạn chiều rộng tối đa */
+    margin-top: 50px; /* Khoảng cách từ trên xuống */
+    display: flex; /* Dùng flexbox để căn giữa */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
 
-/* Đặt các thuộc tính cho biểu đồ */
+/* Thiết kế cho canvas của biểu đồ */
 canvas {
-    background: #f2f3f2;
-    border-radius: 10px;
-    padding: 20px;
+    background: #f2f3f2; /* Màu nền của biểu đồ */
+    border-radius: 10px; /* Bo góc cho canvas */
+    padding: 20px; /* Khoảng cách trong canvas */
 }
+
+/* Kiểu cho thông báo */
 #notification {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #28a745;  /* Màu nền mặc định là xanh lá */
-    color: white;  /* Màu chữ */
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;  /* Ẩn thông báo mặc định */
-    font-size: 18px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;  /* Đảm bảo thông báo nằm trên các phần tử khác */
+    position: fixed; /* Đặt thông báo cố định ở phía dưới */
+    bottom: 20px; /* Cách đáy 20px */
+    left: 50%; /* Căn giữa theo chiều ngang */
+    transform: translateX(-50%); /* Căn giữa chính xác */
+    background-color: #28a745; /* Màu nền của thông báo */
+    color: white; /* Màu chữ */
+    padding: 10px 20px; /* Khoảng cách trong thông báo */
+    border-radius: 5px; /* Bo góc thông báo */
+    display: none; /* Ẩn thông báo mặc định */
+    font-size: 18px; /* Kích thước chữ trong thông báo */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Bóng đổ cho thông báo */
+    z-index: 1000; /* Đặt thông báo lên trên các phần tử khác */
 }

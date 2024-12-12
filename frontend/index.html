@@ -4,52 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard with Temperature, Humidity, and Light</title>
+    <!-- Liên kết tới thư viện Font Awesome để sử dụng các biểu tượng -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Liên kết tới tệp CSS tùy chỉnh của bạn để điều chỉnh giao diện -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Thanh danh mục -->
+    <!-- Thanh danh mục (menu) bên trái -->
     <nav>
         <ul>
+            <!-- Liên kết đến trang chính -->
             <li><a href="index.html" target="_self">HOME</a></li>
+            <!-- Liên kết đến trang lịch sử dữ liệu -->
             <li><a href="history.html" target="data_tab">DATA</a></li>
+            <!-- Liên kết đến trang lịch sử thiết bị -->
             <li><a href="device_history.html" target="device_tab">DEVICE</a></li>
+            <!-- Liên kết đến trang thêm mới thiết bị -->
             <li><a href="new.html" target="new_tab">NEW</a></li>
-            <!--<li><a href="new1.html" target="new1_tab">NEW1</a></li>-->
         </ul>
     </nav>
     
-    <!-- Thông tin -->
+    <!-- Phần chứa thông tin cảm biến và điều khiển -->
     <div class="content-container">
+        <!-- Dashboard chứa các hộp thông tin cho nhiệt độ, độ ẩm, ánh sáng, LED và quạt -->
         <div class="dashboard-container">
+            <!-- Hộp thông tin nhiệt độ -->
             <div class="info-box temp">
                 <h2><i class="fas fa-thermometer-half"></i> Nhiệt Độ</h2>
+                <!-- Hiển thị giá trị nhiệt độ (dynamically updated) -->
                 <p id="tempValue">--°C</p>
             </div>
+            <!-- Hộp thông tin độ ẩm -->
             <div class="info-box humidity">
                 <h2><i class="fas fa-tint"></i> Độ Ẩm</h2>
+                <!-- Hiển thị giá trị độ ẩm (dynamically updated) -->
                 <p id="humidityValue">--%</p>
             </div>
+            <!-- Hộp thông tin ánh sáng -->
             <div class="info-box light">
-                <h2><i class="fas fa-sun"></i>Ánh Sáng</h2>
+                <h2><i class="fas fa-sun"></i> Ánh Sáng</h2>
+                <!-- Hiển thị giá trị ánh sáng (dynamically updated) -->
                 <p id="lightValue">-- lux</p>
             </div>
-            <div class="info-box led-control" id="btnLedControl">
-                <h2><i class="fas fa-lightbulb" id="ledIcon"></i> LED</h2>
-                <p id="ledStatus">--</p>
+            <!-- Hộp điều khiển LED -->
+            <div class="info-box led-control" id="btnLedControl" class="led-off">
+                <h2><i class="fas fa-lightbulb"></i> LED</h2>
+                <!-- Hiển thị trạng thái LED (OFF hoặc ON) -->
+                <p id="ledStatus">OFF</p>
             </div>
+            <!-- Hộp điều khiển quạt -->
             <div class="info-box fan-control" id="btnFanControl">
                 <h2><i class="fas fa-fan"></i> FAN</h2>
-                <p id="fanStatus">--</p>
+                <!-- Hiển thị trạng thái quạt (OFF hoặc ON) -->
+                <p id="fanStatus">OFF</p>
             </div>
         </div>
 
+        <!-- Phần chứa biểu đồ, nơi hiển thị dữ liệu cảm biến -->
         <div class="chart-container">
             <canvas id="sensorChart"></canvas>
         </div>
     </div>
 
+    <!-- Thư viện Chart.js dùng để vẽ biểu đồ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tệp JavaScript của bạn, nơi xử lý logic cho cảm biến và điều khiển -->
     <script src="script.js"></script>
 </body>
 </html>

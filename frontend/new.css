@@ -115,12 +115,13 @@ nav ul li a:hover {
 }
 
 /* Đặt màu nền cho các loại hộp thông tin khác nhau */
-.info-box.gas {
+.info-box.wind {
     background-color: #17a2b8;
 }
 
 .info-box.led-control {
     background-color: #28a745;
+    font-size: 30px; /* Tăng kích thước chữ */
 }
 
 /* Đặt các thuộc tính cho khối chứa biểu đồ */
@@ -165,6 +166,11 @@ canvas {
     50% {
         color: white;
     }
+}
+
+#ledIcon {
+    font-size: 40px; /* Tăng kích thước biểu tượng LED */
+    margin-right: 10px; /* Thêm khoảng cách giữa biểu tượng và chữ nếu cần */
 }
 
 /* Hiệu ứng LED bật/tắt */
