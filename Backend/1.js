@@ -1,10 +1,10 @@
-const express = require('express');
-const mysql = require('mysql2');
-const mqtt = require('mqtt');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const app = express();
-app.use(bodyParser.json());
+const express = require('express'); // tạo server API
+const mysql = require('mysql2');    // kết nối mysql
+const mqtt = require('mqtt');       // giao tiếp mqtt
+const bodyParser = require('body-parser');  // xử lý các yêu cầu từ http
+const cors = require('cors');               // phép các ứng dụng từ domain khác truy cập API.
+const app = express();                      // Tạo ứng dụng Express
+app.use(bodyParser.json());                 // Cho phép server đọc dữ liệu JSON từ body của các request.
 app.use(cors()); // Enable CORS for all requests
 
 // MQTT Configuration
@@ -58,32 +58,32 @@ mqttClient.on('connect', () => {
 mqttClient.on('message', (topic, message) => {
     if (topic === MQTT_TOPIC_SENSORS) {
         const data = JSON.parse(message.toString());
-        const { temperature, humidity, light, gas} = data;
+        const { temperature, humidity, light, wind} = data;
 
         if (
             temperature !== undefined &&
             humidity !== undefined &&
             light !== undefined &&
-            gas !== undefined 
+            wind !== undefined 
         ) {
             // Lưu dữ liệu cảm biến vào cơ sở dữ liệu
             dbSensor.query(
-                'INSERT INTO sensor_data (Temp, Humid, Light, gas) VALUES (?, ?, ?, ?)',
-                [temperature, humidity, light, gas],
+                'INSERT INTO sensor_data (Temp, Humid, Light, Wind) VALUES (?, ?, ?, ?)',
+                [temperature, humidity, light, wind],
                 (err) => {
                     if (err) {
                         console.error('Error saving sensor data:', err);
                     } else {
                         console.log(
-                            `Data saved: Temperature=${temperature}, Humidity=${humidity}, Light=${light}, Gas=${gas}`
+                            `Data saved: Temperature=${temperature}, Humidity=${humidity}, Light=${light}, Wind=${wind}`
                         );
                     }
                 }
             );
 
-            // Kiểm tra nếu khí gas > 50 thì gửi lệnh bật nhấp nháy LED
-            if (gas > 50) {
-                console.log('Gas level is high, sending blink command to LED');
+            // Kiểm tra nếu khí wind > 50 thì gửi lệnh bật nhấp nháy LED
+            if (wind > 50) {
+                console.log('Wind level is high, sending blink command to LED');
                 mqttClient.publish(MQTT_TOPIC_OUTPUT, 'blink_on', (err) => {
                     if (err) {
                         console.error('Error publishing blink command to MQTT:', err);
@@ -92,7 +92,7 @@ mqttClient.on('message', (topic, message) => {
                     }
                 });
             } else {
-                // Nếu khí gas không còn quá cao, tắt LED (nếu cần thiết)
+                // Nếu khí wind không còn quá cao, tắt LED (nếu cần thiết)
                 mqttClient.publish(MQTT_TOPIC_OUTPUT, 'blink_off', (err) => {
                     if (err) {
                         console.error('Error publishing turn off command to MQTT:', err);
@@ -195,16 +195,16 @@ app.get('/api/device_history', (req, res) => {
 // API to get latest sensor data
 app.get('/api/latest_sensor_data', (req, res) => {
     dbSensor.query(
-        'SELECT Temp, Humid, Light, gas FROM sensor_data ORDER BY id DESC LIMIT 1',
+        'SELECT Temp, Humid, Light, Wind FROM sensor_data ORDER BY id DESC LIMIT 1',
         (err, results) => {
             if (err) return res.status(500).json({ error: 'Internal Server Error' });
             if (results.length > 0) {
-                const { Temp, Humid, Light, gas} = results[0];
+                const { Temp, Humid, Light, Wind} = results[0];
                 res.json({
                     temperature: Temp,
                     humidity: Humid,
                     light: Light,
-                    gas: gas
+                    wind: Wind
                 });
             } else {
                 res.status(404).json({ error: 'No data found' });

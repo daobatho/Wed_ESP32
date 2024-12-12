@@ -21,7 +21,7 @@ const data = {
             label: 'Wind Speed (m/s)',
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            data: [], // Mảng dữ liệu khí gas
+            data: [], // Mảng dữ liệu khí wind
             fill: true
         },
     ]
@@ -92,15 +92,15 @@ function updateData() {
         .then(response => response.json())
         .then(data => {
             console.log(data); // Xem dữ liệu nhận được
-            if (data && data.gas !== undefined ) {
+            if (data && data.wind !== undefined ) {
                 // Cập nhật dữ liệu cảm biến lên giao diện web
-                document.getElementById('gasValue').textContent = `${data.gas} m/S`;
+                document.getElementById('gasValue').textContent = `${data.wind} m/s`;
 
                 // Thêm nhãn thời gian cho mỗi lần cập nhật
                 addTimeLabel();
 
                 // Cập nhật dữ liệu vào biểu đồ
-                sensorChart.data.datasets[0].data.push(data.gas);
+                sensorChart.data.datasets[0].data.push(data.wind);
 
                 // Cập nhật biểu đồ
                 sensorChart.update();
@@ -112,15 +112,34 @@ function updateData() {
 
                 // Cập nhật biểu đồ
                 sensorChart.update();
-                // Cập nhật màu sắc cảnh báo khi mức khí gas lớn hơn 70
+                // Cập nhật màu sắc cảnh báo khi mức khí wind lớn hơn 50
                 const warningIcon = document.getElementById('warningIcon');
-                if (data.gas > 70) {
-                    // Đổi màu bóng đèn khi gas > 70 và bật hiệu ứng nhấp nháy
-                    warningIcon.classList.add('warning-on');
+                if (data.wind > 50) {
+                    // Đổi màu bóng đèn và bật hiệu ứng nhấp nháy 3 lần
+                    let blinkCount = 0;
+                
+                    function toggleLed() {
+                        if (blinkCount < 3) {
+                            if (blinkCount % 2 === 0) {
+                                // Màu đỏ
+                                warningIcon.classList.add('warning-on');
+                            } else {
+                                // Màu trắng
+                                warningIcon.classList.remove('warning-on');
+                            }
+                            blinkCount++;
+                            setTimeout(toggleLed, 250); // Đợi 0.25s trước khi bật/tắt lần tiếp theo
+                        }
+                    }
+                
+                    // Bắt đầu hiệu ứng nhấp nháy
+                    toggleLed();
                 } else {
-                    // Trở lại màu trắng và tắt hiệu ứng nhấp nháy khi gas <= 70
+                    // Trở lại màu trắng và tắt hiệu ứng nhấp nháy khi wind <= 50
                     warningIcon.classList.remove('warning-on');
                 }
+                
+                
             } else {
                 console.error('Dữ liệu không hợp lệ:', data);
             }
@@ -128,7 +147,6 @@ function updateData() {
         .catch(error => console.error('Lỗi:', error));
 }
 
-// Gửi yêu cầu điều khiển LED
 // Gửi yêu cầu điều khiển LED
 function toggleLed() {
     // Đảo trạng thái của LED
@@ -160,12 +178,7 @@ function toggleLed() {
     .catch(error => console.error('Lỗi:', error));
 }
 
-
 // Lắng nghe sự kiện click vào nút điều khiển LED
-document.getElementById('btnLedControl').addEventListener('click', toggleLed);
-
-
-// Lắng nghe sự kiện click vào nút điều khiển LED và FAN
 document.getElementById('btnLedControl').addEventListener('click', toggleLed);
 
 // Bắt đầu lấy dữ liệu khi trang được tải

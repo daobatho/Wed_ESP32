@@ -149,7 +149,7 @@ void loop() {
     // Ánh xạ giá trị ldrValue từ (0, 4095) về (0, 100)
     long mappedLDRValue = map(ldrValue, 0, 4095, 0, 100);
     // Gửi dữ liệu tới MQTT
-    snprintf(msg, 150, "{\"temperature\":%2.1f,\"humidity\":%2.1f,\"light\":%ld,\"gas\":%d}", 
+    snprintf(msg, 150, "{\"temperature\":%2.1f,\"humidity\":%2.1f,\"light\":%ld,\"wind\":%d}", 
              t, h, mappedLDRValue, gasValue);
     Serial.print("Gửi dữ liệu: ");
     Serial.println(msg);

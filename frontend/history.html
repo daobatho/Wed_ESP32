@@ -83,10 +83,6 @@
             font-size: 24px;
             text-align: center;
         }
-        .table-scroll {
-            max-height: 420px;
-            overflow-y: auto;
-        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -100,12 +96,32 @@
             text-align: center;
             color: white;
             word-wrap: break-word;
+            white-space: nowrap;
         }
         th {
             background-color: rgba(255, 255, 255, 0.2);
         }
         tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.1);
+        }
+        thead {
+            display: block;
+        }
+        tbody {
+            display: block;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        thead th, tbody td {
+            min-width: 185px;
+        }
+        tbody td:nth-child(1),
+        thead th:nth-child(1) {
+            min-width: 80px;
+        }
+        tbody td:nth-child(4),
+        thead th:nth-child(4) {
+            min-width: 250px;
         }
     </style>
 </head>
@@ -133,23 +149,21 @@
 
         <div class="table-container">
             <h1>Lịch sử Cảm biến</h1>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Temp</th>
-                            <th>Humid</th>
-                            <th>Light</th>
-                            <th>Gas</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sensorHistoryTableBody">
-                        <!-- Dữ liệu cảm biến sẽ được thêm vào đây -->
-                    </tbody>
-                </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Temp</th>
+                        <th>Humid</th>
+                        <th>Light</th>
+                        <th>Wind</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="sensorHistoryTableBody">
+                    <!-- Dữ liệu cảm biến sẽ được thêm vào đây -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -178,7 +192,7 @@
                     <td>${entry.Temp}</td>
                     <td>${entry.Humid}</td>
                     <td>${entry.Light}</td>
-                    <td>${entry.gas}</td>
+                    <td>${entry.Wind}</td>
                     <td>${new Date(entry.Time).toLocaleString()}</td>
                 `;
                 tableBody.appendChild(row);

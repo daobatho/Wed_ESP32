@@ -123,7 +123,14 @@ function updateData() {
                 sensorChart.data.datasets[0].data.push(data.temperature);
                 sensorChart.data.datasets[1].data.push(data.humidity);
                 sensorChart.data.datasets[2].data.push(data.light);
-
+                sensorChart.update();
+                // Giới hạn số lượng giá trị trong mảng dữ liệu
+                if (sensorChart.data.datasets[0].data.length > 6) {
+                    sensorChart.data.datasets[0].data.shift(); // Xóa phần tử đầu tiên
+                    sensorChart.data.datasets[1].data.shift(); // Xóa phần tử đầu tiên
+                    sensorChart.data.datasets[2].data.shift(); // Xóa phần tử đầu tiên
+                    labels.shift(); // Xóa nhãn thời gian đầu tiên
+                }
                 // Cập nhật biểu đồ
                 sensorChart.update();
             } else {
@@ -146,7 +153,7 @@ function toggleLed() {
     .then(response => response.json())
     .then(data => {
         console.log(`LED turned ${ledState}`);
-        document.getElementById('ledStatus').textContent = ledState === 'on' ? '✓' : '✗';
+        document.getElementById('ledStatus').textContent = ledState === 'on' ? 'ON' : 'OFF';
     })
     .catch(error => console.error('Lỗi:', error));
 }
@@ -164,7 +171,7 @@ function toggleFan() {
     .then(response => response.json())
     .then(data => {
         console.log(`FAN turned ${fanState}`);
-        document.getElementById('fanStatus').textContent = fanState === 'on' ? '✓' : '✗';
+        document.getElementById('fanStatus').textContent = fanState === 'on' ? 'ON' : 'OFF';
     })
     .catch(error => console.error('Lỗi:', error));
 }
@@ -185,7 +192,7 @@ document.getElementById('btnFanControl').addEventListener('click', toggleFan);
 // Bắt đầu lấy dữ liệu khi trang được tải
 function startDataFetching() {
     updateData(); // Gọi hàm lấy dữ liệu một lần đầu tiên
-    setInterval(updateData, 10000); // Gọi lại sau mỗi 10 giây
+    setInterval(updateData, 5000); // Gọi lại sau mỗi 10 giây
 }
 
 // Khởi động lấy dữ liệu khi trang tải

@@ -3,12 +3,13 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh; /* Sử dụng 100% chiều cao màn hình */
-    background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%);
+    background: linear-gradient(135deg, #00c3ff 0%, #1cefff 100%); /* Màu nền gradient */
     font-family: 'Open Sans', sans-serif;
     display: flex;
     flex-direction: column; /* Định hướng theo cột */
     align-items: center; /* Canh giữa theo trục ngang */
-    justify-content: start; /* Căn phần tử theo trục dọc */
+    justify-content: flex-start; /* Căn phần tử theo trục dọc */
+    overflow: hidden; /* Ẩn thanh cuộn nếu không cần thiết */
 }
 
 /* Đặt các thuộc tính cho thanh điều hướng */
@@ -17,7 +18,7 @@ nav {
     background-color: #333;
     color: white;
     padding: 15px;
-    height: 100vh;
+    height: 100vh; /* Chiều cao của thanh điều hướng luôn bằng chiều cao màn hình */
     position: fixed;
     left: 0;
     top: 0;
@@ -64,15 +65,18 @@ nav ul li a:hover {
     align-items: center;
     padding: 20px;
     gap: 20px; /* Khoảng cách giữa các phần tử trong container */
+    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá */
+    flex-grow: 1; /* Cho phép phần tử này mở rộng để chiếm phần không gian còn lại */
 }
 
-/* Đặt các thuộc tính cho khối hiển thị thông tin và cảnh báo */
+/* Đảm bảo nội dung khối dashboard không vượt quá chiều cao */
 .dashboard-container {
     display: flex;
     flex-wrap: wrap; /* Cho phép xuống hàng khi không đủ chỗ */
     gap: 20px; /* Khoảng cách giữa các hộp */
     justify-content: center;
     width: 100%;
+    flex-grow: 1;
 }
 
 /* Đặt các thuộc tính cho hộp thông tin */
@@ -130,6 +134,7 @@ nav ul li a:hover {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    flex-grow: 1; /* Cho phép phần tử này mở rộng nếu cần */
 }
 
 /* Đặt các thuộc tính cho biểu đồ */
@@ -149,7 +154,7 @@ canvas {
 
 /* Khi có cảnh báo, đổi màu bóng đèn thành đỏ và nhấp nháy */
 #warningIcon.warning-on {
-    animation: blink 0.25s step-start 6;
+    animation: blink 0.25s step-start 3;
 }
 
 /* Hiệu ứng nhấp nháy */

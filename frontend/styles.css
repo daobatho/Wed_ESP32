@@ -7,6 +7,7 @@ body {
     font-family: 'Open Sans', sans-serif; /* Font chữ phù hợp cho web */
     display: flex; /* Sử dụng flex để căn chỉnh */
     flex-direction: column; /* Định hướng flex theo cột */
+    overflow: hidden; /* Ẩn thanh cuộn cho phần biểu đồ */
 }
 
 /* Đặt các thuộc tính cho thanh điều hướng */
