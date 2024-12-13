@@ -7,5 +7,6 @@ CREATE TABLE sensor_data (
     Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     Wind INT
 );
+
 SELECT * FROM sensor_data
 
